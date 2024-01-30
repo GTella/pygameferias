@@ -53,6 +53,26 @@ def game_screen(window):
 
     quadrados_memoria = criar_quadrados_memoria(N)
 
+    def verificar_correspondencia(quadrados, x_clicado, y_clicado):
+        for i, quadrado in enumerate(quadrados):
+            x = quadrado['x']
+            y = quadrado['y']
+            lado = quadrado['lado']
+
+            if colisao_ponto_retangulo(x_clicado, y_clicado, x, y, lado, lado):
+                if 'ultimo_clicado' not in globals():
+                    global ultimo_clicado
+                    ultimo_clicado = i
+                else:
+                    if quadrados[ultimo_clicado]['cor'] == quadrado['cor']:
+                        del quadrados[i]
+                        del quadrados[ultimo_clicado]
+                    else:
+                        quadrados[ultimo_clicado]['revelado'] = False
+                        quadrados[i]['revelado'] = False
+
+                    del globals()['ultimo_clicado']
+    
     # ===== Loop principal =====
     while state != DONE:
         clock.tick(FPS)
@@ -60,14 +80,14 @@ def game_screen(window):
         # ----- Trata eventos
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                state = DONE
+                state = DONE  # Alteração aqui
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 pos_mouse = pygame.mouse.get_pos()
                 for quadrado in quadrados_memoria:
                     if not quadrado['revelado']:
                         if colisao_ponto_retangulo(pos_mouse[0], pos_mouse[1],
-                                                  quadrado['x'], quadrado['y'],
-                                                  quadrado['lado'], quadrado['lado']):
+                                              quadrado['x'], quadrado['y'],
+                                              quadrado['lado'], quadrado['lado']):
                             quadrado['revelado'] = True
 
         window.fill(BLACK)
@@ -79,4 +99,8 @@ def game_screen(window):
                 pygame.draw.rect(window, quadrado['cor'], (quadrado['x'], quadrado['y'], quadrado['lado'], quadrado['lado']))
 
         pygame.display.update()
+
+# Encerre o jogo corretamente
+    pygame.quit()
+
     return state
