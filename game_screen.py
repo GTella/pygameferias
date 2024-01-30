@@ -22,7 +22,7 @@ def game_screen(window):
 
         cores = [(255, 0, 0), (0, 255, 0), (0, 0, 255), (255, 255, 0),
                  (255, 0, 255), (0, 255, 255), (128, 0, 0), (0, 128, 0),
-                 (0, 0, 128), (128, 128, 0), (128, 0, 128), (0, 128, 128)]
+                 ]
 
         cores *= 2
         random.shuffle(cores)
@@ -33,9 +33,9 @@ def game_screen(window):
 
         for i in range(N):
             for j in range(N):
-                x = i * N
-                y = j * N
-                lado = N
+                x = i * 150
+                y = j * 150
+                lado = 140
                 revelado = False
                 cor = cores[cor_idx]
                 cor_idx += 1
@@ -90,13 +90,17 @@ def game_screen(window):
                                               quadrado['lado'], quadrado['lado']):
                             quadrado['revelado'] = True
 
+                
+                # logica verificar se tem dois quadrados como true
+                            
+
         window.fill(BLACK)
 
         for quadrado in quadrados_memoria:
             if not quadrado['revelado']:
-                pygame.draw.rect(window, (255, 255, 255), (quadrado['x'], quadrado['y'], quadrado['lado'], quadrado['lado']))
+                pygame.draw.rect(window, (255, 255, 255), (quadrado['x']+140, quadrado['y']+70, quadrado['lado'], quadrado['lado']))
             else:
-                pygame.draw.rect(window, quadrado['cor'], (quadrado['x'], quadrado['y'], quadrado['lado'], quadrado['lado']))
+                pygame.draw.rect(window, quadrado['cor'], (quadrado['x']+140, quadrado['y']+70, quadrado['lado'], quadrado['lado']))
 
         pygame.display.update()
 
