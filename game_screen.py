@@ -100,6 +100,12 @@ def game_screen(window):
 
         pygame.display.update()
 
+
+        #Etapa 5
+        #Verifica se o jogador ganhou
+        if not quadrados_memoria:
+            state = DONE
+
 # Encerre o jogo corretamente
     pygame.quit()
 
