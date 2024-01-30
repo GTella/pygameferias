@@ -15,7 +15,7 @@ def criar_quadrados_memoria(N, largura_tela, altura_tela):
 
     cor_idx = 0
 
-    # Ajuste para centralizar os quadrados na tela
+
     margem_horizontal = (largura_tela - N * lado) // 2
     margem_vertical = (altura_tela - N * lado) // 2
 
