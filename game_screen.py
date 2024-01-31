@@ -44,7 +44,6 @@ def game_screen(window):
 
         return quadrados
 
-    # Função para verificar colisão de um ponto com um retângulo
     def colisao_ponto_retangulo(x_ponto, y_ponto, x_retangulo, y_retangulo, largura_retangulo, altura_retangulo):
         if x_retangulo <= x_ponto <= x_retangulo + largura_retangulo and y_retangulo <= y_ponto <= y_retangulo + altura_retangulo:
             return True
@@ -72,7 +71,21 @@ def game_screen(window):
                         quadrados[i]['revelado'] = False
 
                     del globals()['ultimo_clicado']
-    
+    def verificar_dois_quadrados_revelados(quadrados):
+        quadrados_revelados = [q for q in quadrados if q['revelado']]
+        
+        if len(quadrados_revelados) == 2:
+            # Dois quadrados foram revelados, verifica as cores
+            cor1 = quadrados_revelados[0]['cor']
+            cor2 = quadrados_revelados[1]['cor']
+
+            if cor1 == cor2:
+                for q in quadrados_revelados:
+                    quadrados.remove(q)
+            else:
+                for q in quadrados_revelados:
+                    q['revelado'] = False
+  
     # ===== Loop principal =====
     while state != DONE:
         clock.tick(FPS)
