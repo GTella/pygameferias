@@ -101,6 +101,7 @@ def game_screen(window):
                                               quadrado['x'], quadrado['y'],
                                               quadrado['lado'], quadrado['lado']):
                             quadrado['revelado'] = True
+                            
 
                 
                             
@@ -109,9 +110,9 @@ def game_screen(window):
 
         for quadrado in quadrados_memoria:
             if not quadrado['revelado']:
-                pygame.draw.rect(window, (255, 255, 255), (quadrado['x']+140, quadrado['y']+70, quadrado['lado'], quadrado['lado']))
+                pygame.draw.rect(window, (255, 255, 255), (quadrado['x'], quadrado['y'], quadrado['lado'], quadrado['lado']))
             else:
-                pygame.draw.rect(window, quadrado['cor'], (quadrado['x']+140, quadrado['y']+70, quadrado['lado'], quadrado['lado']))
+                pygame.draw.rect(window, quadrado['cor'], (quadrado['x'], quadrado['y'], quadrado['lado'], quadrado['lado']))
 
         pygame.display.update()
 
