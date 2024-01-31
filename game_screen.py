@@ -15,7 +15,6 @@ def game_screen(window):
 
     N = 4  # Defina o valor de N conforme desejado
 
-    # Função para criar quadrados do jogo da memória
     def criar_quadrados_memoria(N):
         if N % 2 != 0:
             raise ValueError("N deve ser um número par para garantir pares de cores")
@@ -71,11 +70,11 @@ def game_screen(window):
                         quadrados[i]['revelado'] = False
 
                     del globals()['ultimo_clicado']
+                    
     def verificar_dois_quadrados_revelados(quadrados):
         quadrados_revelados = [q for q in quadrados if q['revelado']]
         
         if len(quadrados_revelados) == 2:
-            # Dois quadrados foram revelados, verifica as cores
             cor1 = quadrados_revelados[0]['cor']
             cor2 = quadrados_revelados[1]['cor']
 
@@ -104,7 +103,6 @@ def game_screen(window):
                             quadrado['revelado'] = True
 
                 
-                # logica verificar se tem dois quadrados como true
                             
 
         window.fill(BLACK)
