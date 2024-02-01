@@ -10,66 +10,67 @@ def game_screen(window):
 
     DONE = 0
     PLAYING = 1
-    state = PLAYING
+    WIN = 2
+    estado_jogo = PLAYING
 
     N = 4
-
+    #etapa 1
     def criar_quadrados_memoria(N):
         if N % 2 != 0:
-            raise ValueError("N deve ser um número par para garantir pares de cores")
+            raise ValueError("N deve ser um número par para garantir pares de cores_quadrados")
 
-        cores = [(255, 0, 0), (0, 255, 0), (0, 0, 255), (255, 255, 0),
+        cores_quadrados = [(255, 0, 0), (0, 255, 0), (0, 0, 255), (255, 255, 0),
                  (255, 0, 255), (0, 255, 255), (128, 0, 0), (0, 128, 0),
                  ]
 
-        cores *= 2
-        random.shuffle(cores)
+        cores_quadrados *= 2
+        random.shuffle(cores_quadrados)
 
         quadrados = []
-
+        #etapa 6
         for i in range(N):
             for j in range(N):
-                x = i * 150
-                y = j * 150
+                x = WIDTH // 2 - (N * 150) // 2 + i * 150
+                y = HEIGHT // 2 - (N * 150) // 2 + j * 150
                 lado = 140
                 revelado = False
-                cor = cores.pop()  # Removendo a cor da lista
+                cor = cores_quadrados.pop()  # Removendo a cor da lista
                 quadrado = {'x': x, 'y': y, 'lado': lado, 'cor': cor, 'revelado': revelado}
                 quadrados.append(quadrado)
 
         return quadrados
 
     quadrados_memoria = criar_quadrados_memoria(N)
-    selecionados = []
+    revelado = []
 
-    while state != DONE:
+    while estado_jogo != DONE:
         clock.tick(FPS)
-
+    
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                state = DONE
+                estado_jogo = DONE
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 pos_mouse = pygame.mouse.get_pos()
                 for quadrado in quadrados_memoria:
                     if not quadrado['revelado']:
-                        if colisao_ponto_retangulo(pos_mouse[0], pos_mouse[1],
+                        if colisao_ponto_quadrado(pos_mouse[0], pos_mouse[1],
                                                   quadrado['x'], quadrado['y'],
                                                   quadrado['lado'], quadrado['lado']):
                             quadrado['revelado'] = True
-                            selecionados.append(quadrado)
+                            revelado.append(quadrado)
 
-                            if len(selecionados) == 2:
+                            if len(revelado) == 2:
                                 pygame.time.wait(500)  # Aguarda 0.5 segundo antes de esconder as cartas
-                                if selecionados[0]['cor'] == selecionados[1]['cor']:
-                                    quadrados_memoria.remove(selecionados[0])
-                                    quadrados_memoria.remove(selecionados[1])
+                                if revelado[0]['cor'] == revelado[1]['cor']:
+                                    quadrados_memoria.remove(revelado[0])
+                                    quadrados_memoria.remove(revelado[1])
                                 else:
-                                    selecionados[0]['revelado'] = False
-                                    selecionados[1]['revelado'] = False
-                                selecionados = []
+                                    revelado[0]['revelado'] = False
+                                    revelado[1]['revelado'] = False
+                                revelado = []
 
         window.fill(BLACK)
-
+        #etapa 2
         for quadrado in quadrados_memoria:
             if quadrado['revelado']:
                 pygame.draw.rect(window, quadrado['cor'], (quadrado['x'], quadrado['y'], quadrado['lado'], quadrado['lado']))
@@ -78,16 +79,25 @@ def game_screen(window):
 
         pygame.display.update()
 
-        # Verifica se o jogador ganhou
-        if not quadrados_memoria:
-            state = DONE
+        # etapa 5
+        if not quadrados_memoria and estado_jogo == PLAYING:
+            estado_jogo = WIN
+
+        if estado_jogo == WIN:
+            # Tela de Parabéns
+            font = pygame.font.Font(None, 36)
+            texto = font.render("Parabéns, você ganhou!", True, (255, 255, 255))
+            window.blit(texto, (WIDTH // 2 - texto.get_width() // 2, HEIGHT // 2 - texto.get_height() // 2))
+            pygame.display.update()
+            pygame.time.wait(3000)  # Aguarda 3 segundos antes de encerrar o jogo
+            estado_jogo = DONE
 
     pygame.quit()
 
-    return state
-
-def colisao_ponto_retangulo(x_ponto, y_ponto, x_retangulo, y_retangulo, largura_retangulo, altura_retangulo):
-    if x_retangulo <= x_ponto <= x_retangulo + largura_retangulo and y_retangulo <= y_ponto <= y_retangulo + altura_retangulo:
+    return estado_jogo
+#etapa 3
+def colisao_ponto_quadrado(x_ponto, y_ponto, x_quadrado, y_quadrado, largura_quadrado, altura_quadrado):
+    if x_quadrado <= x_ponto <= x_quadrado + largura_quadrado and y_quadrado <= y_ponto <= y_quadrado + altura_quadrado:
         return True
     else:
         return False
