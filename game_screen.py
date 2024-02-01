@@ -4,7 +4,6 @@ from assets import carrega_arquivos
 import random
 
 def game_screen(window):
-    # Variável para o ajuste de velocidade
     clock = pygame.time.Clock()
 
     dicionario_de_arquivos = carrega_arquivos()
@@ -13,7 +12,7 @@ def game_screen(window):
     PLAYING = 1
     state = PLAYING
 
-    N = 4  # Defina o valor de N conforme desejado
+    N = 4
 
     def criar_quadrados_memoria(N):
         if N % 2 != 0:
@@ -28,101 +27,67 @@ def game_screen(window):
 
         quadrados = []
 
-        cor_idx = 0
-
         for i in range(N):
             for j in range(N):
                 x = i * 150
                 y = j * 150
                 lado = 140
                 revelado = False
-                cor = cores[cor_idx]
-                cor_idx += 1
+                cor = cores.pop()  # Removendo a cor da lista
                 quadrado = {'x': x, 'y': y, 'lado': lado, 'cor': cor, 'revelado': revelado}
                 quadrados.append(quadrado)
 
         return quadrados
 
-    def colisao_ponto_retangulo(x_ponto, y_ponto, x_retangulo, y_retangulo, largura_retangulo, altura_retangulo):
-        if x_retangulo <= x_ponto <= x_retangulo + largura_retangulo and y_retangulo <= y_ponto <= y_retangulo + altura_retangulo:
-            return True
-        else:
-            return False
-
     quadrados_memoria = criar_quadrados_memoria(N)
+    selecionados = []
 
-    def verificar_correspondencia(quadrados, x_clicado, y_clicado):
-        for i, quadrado in enumerate(quadrados):
-            x = quadrado['x']
-            y = quadrado['y']
-            lado = quadrado['lado']
-
-            if colisao_ponto_retangulo(x_clicado, y_clicado, x, y, lado, lado):
-                if 'ultimo_clicado' not in globals():
-                    global ultimo_clicado
-                    ultimo_clicado = i
-                else:
-                    if quadrados[ultimo_clicado]['cor'] == quadrado['cor']:
-                        del quadrados[i]
-                        del quadrados[ultimo_clicado]
-                    else:
-                        quadrados[ultimo_clicado]['revelado'] = False
-                        quadrados[i]['revelado'] = False
-
-                    del globals()['ultimo_clicado']
-                    
-    def verificar_dois_quadrados_revelados(quadrados):
-        quadrados_revelados = [q for q in quadrados if q['revelado']]
-        
-        if len(quadrados_revelados) == 2:
-            cor1 = quadrados_revelados[0]['cor']
-            cor2 = quadrados_revelados[1]['cor']
-
-            if cor1 == cor2:
-                for q in quadrados_revelados:
-                    quadrados.remove(q)
-            else:
-                for q in quadrados_revelados:
-                    q['revelado'] = False
-  
-    # ===== Loop principal =====
     while state != DONE:
         clock.tick(FPS)
 
-        # ----- Trata eventos
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                state = DONE  # Alteração aqui
+                state = DONE
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 pos_mouse = pygame.mouse.get_pos()
                 for quadrado in quadrados_memoria:
                     if not quadrado['revelado']:
                         if colisao_ponto_retangulo(pos_mouse[0], pos_mouse[1],
-                                              quadrado['x'], quadrado['y'],
-                                              quadrado['lado'], quadrado['lado']):
+                                                  quadrado['x'], quadrado['y'],
+                                                  quadrado['lado'], quadrado['lado']):
                             quadrado['revelado'] = True
-                            
+                            selecionados.append(quadrado)
 
-                
-                            
+                            if len(selecionados) == 2:
+                                pygame.time.wait(500)  # Aguarda 0.5 segundo antes de esconder as cartas
+                                if selecionados[0]['cor'] == selecionados[1]['cor']:
+                                    quadrados_memoria.remove(selecionados[0])
+                                    quadrados_memoria.remove(selecionados[1])
+                                else:
+                                    selecionados[0]['revelado'] = False
+                                    selecionados[1]['revelado'] = False
+                                selecionados = []
 
         window.fill(BLACK)
 
         for quadrado in quadrados_memoria:
-            if not quadrado['revelado']:
-                pygame.draw.rect(window, (255, 255, 255), (quadrado['x'], quadrado['y'], quadrado['lado'], quadrado['lado']))
-            else:
+            if quadrado['revelado']:
                 pygame.draw.rect(window, quadrado['cor'], (quadrado['x'], quadrado['y'], quadrado['lado'], quadrado['lado']))
+            else:
+                pygame.draw.rect(window, (255, 255, 255), (quadrado['x'], quadrado['y'], quadrado['lado'], quadrado['lado']))
 
         pygame.display.update()
 
-
-        #Etapa 5
-        #Verifica se o jogador ganhou
+        # Verifica se o jogador ganhou
         if not quadrados_memoria:
             state = DONE
 
-# Encerre o jogo corretamente
     pygame.quit()
 
     return state
+
+def colisao_ponto_retangulo(x_ponto, y_ponto, x_retangulo, y_retangulo, largura_retangulo, altura_retangulo):
+    if x_retangulo <= x_ponto <= x_retangulo + largura_retangulo and y_retangulo <= y_ponto <= y_retangulo + altura_retangulo:
+        return True
+    else:
+        return False
