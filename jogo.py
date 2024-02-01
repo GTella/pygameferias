@@ -13,14 +13,14 @@ pygame.mixer.init()
 window = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('Jogo da Memoria')
 
-state = INIT
-while state != QUIT:
-    if state == INIT:
-        state = init_screen(window)
-    elif state == GAME:
-        state = game_screen(window)
+estado_jogo = INIT
+while estado_jogo != QUIT:
+    if estado_jogo == INIT:
+        estado_jogo = init_screen(window)
+    elif estado_jogo == GAME:
+        estado_jogo = game_screen(window)
     else:
-        state = QUIT
+        estado_jogo = QUIT
 
 # ===== Finalização =====
 pygame.quit()  # Função do PyGame que finaliza os recursos utilizados

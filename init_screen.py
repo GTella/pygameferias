@@ -40,8 +40,8 @@ def init_screen(screen):
 
         x+= jogo.rect.width + espacamento
     
-    running = True
-    while running:
+    jogando = True
+    while jogando:
 
         # Ajusta a velocidade do jogo.
         clock.tick(FPS)
@@ -50,16 +50,16 @@ def init_screen(screen):
         for event in pygame.event.get():
             # Verifica se foi fechado.
             if event.type == pygame.QUIT:
-                state = QUIT
-                running = False
+                estado_jogo = QUIT
+                jogando = False
 
             if event.type == pygame.KEYUP:
-                state = GAME
-                running = False
+                estado_jogo = GAME
+                jogando = False
             
             if event.type == pygame.MOUSEBUTTONDOWN:
-                state = GAME
-                running = False
+                estado_jogo = GAME
+                jogando = False
 
             if event.type == pygame.MOUSEMOTION:
                 #Alterando cor do botão
@@ -83,7 +83,7 @@ def init_screen(screen):
             text_rect.centery = btn.rect.centery
             screen.blit(btn_texto, text_rect)
 
-        tela_texto = dicionario_de_arquivos['font_media'].render("Minigames DesSoft", True, WHITE)
+        tela_texto = dicionario_de_arquivos['font_media'].render("Jogo da Memoria", True, WHITE)
         text_rect = tela_texto.get_rect()
         text_rect.centerx = WIDTH / 2
         text_rect.centery = 200
@@ -92,4 +92,4 @@ def init_screen(screen):
         # Depois de desenhar tudo, inverte o display.
         pygame.display.flip()
 
-    return state
+    return estado_jogo
